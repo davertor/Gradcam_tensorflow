@@ -113,6 +113,7 @@ class GradCAM:
             assert model.layers[-1].activation == softmax
         except:
             print('No softmax at the last layer')
+            return model
 
         config = model.layers[-1].get_config()
 
@@ -131,6 +132,7 @@ class GradCAM:
             assert new_model.layers[-1].activation == linear
         except:
             print('Linear activation has not be settled successfully')
+            return model
 
         return new_model
 
