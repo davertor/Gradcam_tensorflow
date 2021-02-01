@@ -2,17 +2,22 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 # Gradcam_tensorflow
-Own implementation of GradCAM algorithm in Tensorflow 2.x
+Own implementation of GradCAM algorithm in Tensorflow 2.x.
 
-Based on GradCAM implementation by Adrien Rosebrock in his blog [PyImageSearch][pyimgsearch-url], but with minor changes listed below to improve its performance
+Based on GradCAM implementation by Adrien Rosebrock in his blog [PyImageSearch][pyimgsearch-url], but with minor changes listed below to improve its performance.
 
-* Change activation layer: If the last dense layer of the network has a softmax activation, it will be substituted by a linear activation. As it is mentioned in the original paper, we want to compute the gradient of
-the score for class c (before the softmax) with respect to
-feature map activations Ak of a convolutional layer. 
+## Description
+Gradient-weighted Class Activation Mapping (GradCAM) is a technique for visualizing the regions of the image that are “important” for predictions from CNN models. In other words, it allows the user to check what CNN is looking at inside the image.
+
+Grad-CAM uses the class-specific gradient information flowing into the final convolutional layer of a CNN to produce a coarse localization map of the important regions in the image.
+
+![Network][network-screenshot]
+
+## Improvements
+
+* Change activation layer: If the last dense layer of the network has a softmax activation, it will be substituted by a linear activation. As it is mentioned in the original paper, we want to compute the gradient of the score for class c (before the softmax) with respect to feature map activations Ak of a convolutional layer. The outputs after softmax will not be independent between them, because softmax scales outputs to obtain that the sum of all outputs is equal to 1. Therefore, we will watch at logits(unscaled outputs)
 
 <img src="images/gradients.png" width="250" style="padding-left: 50px;"/>
-
-The outputs after softmax will not be independent between them, because softmax scales outputs to obtain that the sum of all outputs is equal to 1. Therefore, we will watch at logits(unscaled outputs)
 
 ```
 config = model.layers[-1].get_config()
@@ -45,14 +50,6 @@ else:
 ```
 tape.watch(self.gradModel.get_layer(self.layerName).output)
 ```
-
-## Description
-Gradient-weighted Class Activation Mapping (GradCAM) is a technique for visualizing the regions of the image that are “important” for predictions from CNN models. In other words, it allows the user to check what CNN is looking at inside the image.
-
-Grad-CAM uses the class-specific gradient information flowing into the final convolutional layer of a CNN to produce a coarse localization map of the important regions in the image.
-
-![Network][network-screenshot]
-
 
 ## Requirements
 * Tensorflow 2.x
